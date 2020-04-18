@@ -1,0 +1,19 @@
+[http.routers.match]
+    rule = "PathPrefix(`/match`)"
+    service = "match_service"
+    priority = 5
+    middlewares = ["match_path"]
+
+[http.routers.cursor]
+    rule = "PathPrefix(`/cursor`)"
+    service = "mosquitto"
+    priority = 5
+ 
+[http.middlewares.match_path.stripPrefix]
+    prefixes = ["/match"]
+    
+[[http.services.match_service.loadBalancer.servers]]
+    url = "http://match_service:8000"
+
+[[http.services.mosquitto.loadBalancer.servers]]
+    url = "http://mosquitto:9001"

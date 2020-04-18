@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v2.2
+    container_name: brettspiel_traefik
+    command:
+    - "--entryPoints.http.address=:9000"
+    - "--providers.file.directory=/etc/traefik/config"
+    ports:
+    - 9000:9000
+    volumes:
+    - ./config.toml:/etc/traefik/config/config.toml
+  match_service:
+    build: ./match_service
+    container_name: brettspiel_match_service
+  mosquitto:
+    image: eclipse-mosquitto:1.4.12
+    container_name: brettspiel_mosquitto
+    volumes:
+    - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
