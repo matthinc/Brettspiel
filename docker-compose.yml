@@ -14,8 +14,17 @@ services:
   match_service:
     build: ./match_service
     container_name: brettspiel_match_service
+  dice_service:
+    build: ./dice_service
+    container_name: brettspiel_dice_service
   mosquitto:
     image: eclipse-mosquitto:1.4.12
     container_name: brettspiel_mosquitto
     volumes:
     - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+  caddy:
+    image: abiosoft/caddy
+    container_name: brettspiel_caddy
+    volumes:
+    - ./Caddyfile:/etc/Caddyfile
+    - ./frontend/build:/opt/www

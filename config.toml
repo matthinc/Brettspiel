@@ -4,16 +4,36 @@
     priority = 5
     middlewares = ["match_path"]
 
-[http.routers.cursor]
-    rule = "PathPrefix(`/cursor`)"
+[http.routers.msg]
+    rule = "PathPrefix(`/msg`)"
     service = "mosquitto"
     priority = 5
- 
+
+[http.routers.dice]
+    rule = "PathPrefix(`/dice`)"
+    service = "dice_service"
+    priority = 5
+    middlewares = ["dice_path"]
+
+[http.routers.frontend]
+    rule = "PathPrefix(`/`)"
+    service = "frontend_service"
+    priority = 1
+
 [http.middlewares.match_path.stripPrefix]
     prefixes = ["/match"]
+
+[http.middlewares.dice_path.stripPrefix]
+    prefixes = ["/dice"]
     
 [[http.services.match_service.loadBalancer.servers]]
     url = "http://match_service:8000"
 
 [[http.services.mosquitto.loadBalancer.servers]]
     url = "http://mosquitto:9001"
+
+[[http.services.dice_service.loadBalancer.servers]]
+    url = "http://dice_service:8000"
+
+[[http.services.frontend_service.loadBalancer.servers]]
+    url = "http://caddy:80"

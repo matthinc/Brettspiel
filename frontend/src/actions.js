@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:9000';
+const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:9000' : '';
 
 /*
   REDUX actions
@@ -53,4 +53,14 @@ export function setUserName(id, uid) {
     });
   };
 }
+
+export function rollDice(id, uid) {
+  return dispatch => {
+    axios.post(`${BASE_URL}/dice/roll/${id}/${uid}`).then(data => {
+      dispatch({ type: 'roll_dice' });
+    });
+  };
+}
+
+
 

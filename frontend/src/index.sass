@@ -1,18 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap')
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css')
-@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+@import url('../node_modules/bootstrap/dist/css/bootstrap.min.css')
 
 $primary: #33ffff
 
 
 body
   margin: 0
-  background-color: black
+  background-color: black !important
 
 h2
     color: white
     font-family: Oswald
-
 
 .match
     margin: 0px
@@ -50,6 +49,7 @@ h2
                 color: white
                 border-radius: 5px
                 padding: 5px
+                width: 50%
 
             button
                 border: 1px solid white
@@ -81,3 +81,52 @@ h2
             border-radius: 5px
             cursor: pointer
             border: none
+
+.cursor
+    position: absolute
+    background-color: #555555
+    padding: 2px
+    color: white
+    border-radius: 5px
+    transition: all .2s linear
+
+.piece
+    position: absolute
+    background-color: #ff00ff
+    color: white
+    border-radius: 100%
+    font-size: 14px
+    font-weight: bold
+    padding: 5px
+    cursor: pointer
+
+.anim-pience
+    transition: all .2s linear
+    position: absolute
+    background-color: #ff00ff
+    color: white
+    border-radius: 100%
+    font-size: 14px
+    font-weight: bold
+    padding: 5px
+    cursor: pointer
+
+.dice
+    display: block
+    width: 100px
+    height: 100px
+    border: 1px solid white
+
+    img
+        width: 100%
+
+p
+    color: white
+
+.noselect
+    -webkit-touch-callout: none
+    -webkit-user-select: none
+    -khtml-user-select: none
+    -moz-user-select: none
+    -ms-user-select: none
+    user-select: none

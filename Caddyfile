@@ -1,0 +1,7 @@
+:80 {
+    root /opt/www
+    tls off
+    rewrite / {
+        to {path} /
+    }
+}
