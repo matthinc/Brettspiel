@@ -20,11 +20,16 @@ export default function Landing(props) {
   
   return (
     <div className="match">
-      <div className="container">
-        <div className="title">
-          DAS Brettspiel
+      <div className="window container">
+        <div className="title-bar">
+          <div className="title-bar-text">DAS BRETTSPIEL</div>
+          <div className="title-bar-controls">
+          </div>
         </div>
-        <button className="start-game" onClick={startNewGame}>Start new game</button>
+        <div className="window-body center">
+          <p>Willkommen beim Brettspiel!</p>
+          <button onClick={startNewGame}>Start new game</button>
+        </div>
       </div>
     </div>
   );

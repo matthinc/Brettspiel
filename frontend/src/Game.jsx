@@ -6,6 +6,7 @@ import update from 'immutability-helper';
 import * as actions from './actions';
 import Board from './Board';
 import Dice from './Dice';
+import Window from './Window';
 import MessageManager from './messages';
 
 export default function Game(props) {
@@ -25,7 +26,7 @@ export default function Game(props) {
   const [pieces, setPieces] = useState({});
   
   const [diceNumber, setDiceNumber] = useState(1);
-  const [diceName, setDiceName] = useState(undefined);
+  const [diceHistory, setDiceHistory] = useState([]);
 
   // Workaround
   const piecesRef = useRef();
@@ -35,13 +36,26 @@ export default function Game(props) {
   const usernameRef = useRef();
   usernameRef.current = username;
 
+  // Workaround
+  const messageManagerRef = useRef();
+  messageManagerRef.current = messageManager;
+
+  // Workaround
+  const diceHistoryRef = useRef();
+  diceHistoryRef.current = diceHistory;
+
+  // Workaround
+  const gameIdRef = useRef();
+  gameIdRef.current = gameId;
+
   const onMqttMessage = useCallback((message) => {
     const payload = message.payloadString;
     // Dice movement
     if (message.topic.endsWith('/dice')) {
       const fields = payload.split('_');
       setDiceNumber(fields[0]);
-      setDiceName(fields[1]);
+      const newHistory = [`${fields[1]} (${fields[0]})`, ...diceHistoryRef.current];
+      setDiceHistory([newHistory[0]]);
     }
     // Cursor movement
     if (message.topic.endsWith('/cursor')) {
@@ -54,6 +68,17 @@ export default function Game(props) {
       const fields = payload.split('_');
       if (fields[2] === usernameRef.current) return;
       setPieces(update(piecesRef.current, { [fields[2]]: { $set: { x: Number(fields[0]), y: Number(fields[1]) } } }));
+    }
+    // New player
+    if (message.topic.endsWith('/new')) {
+      // Send current position
+      const username = usernameRef.current;
+      const userPiece = piecesRef.current[username];
+
+      messageManagerRef.current.sendPiece(username, userPiece.x, userPiece.y);
+
+      // Load new users
+      dispatch(actions.getMatchStatus(gameIdRef.current));
     }
   }, [pieces, cursors]);
 
@@ -71,7 +96,7 @@ export default function Game(props) {
       const initialPieces = {};
       let index = 0;
       for (let user of users) {
-        initialPieces[user] = { x: (index % 3) * 0.05 + 0.03, y: 0.75 + Math.floor(index / 3) * 0.05};
+        initialPieces[user] = { x: (index % 3) * 0.05 + 0.06, y: 0.75 + Math.floor(index / 3) * 0.05};
         index++;
       }
       setPieces(initialPieces);
@@ -110,12 +135,24 @@ export default function Game(props) {
       <div className="container mt-4">
         <div className="row">
           <div className="col-md-6">
-            <Board pieces={pieces} cursors={cursors} mouseMove={mouseMove} username={username} movePiece={movePiece}/>
+            <Window title="Brettspiel.exe">
+              <Board pieces={pieces} cursors={cursors} mouseMove={mouseMove} username={username} movePiece={movePiece}/>
+            </Window>
           </div>
           <div className="col-md-6">
-            <h2>Playing as {username}</h2>
-            <p>Click to roll. {diceName && <p>Last rolled by {diceName}</p>}</p>
-            <Dice onClick={rollDice} number={diceNumber}/>
+            <Window title="Dice.exe">
+              <p>Playing as {username}</p>
+              <button className="mb-3" onClick={rollDice}>Roll dice</button>
+              <Dice number={diceNumber}/>
+              <ul className="tree-view mt-3">
+                { diceHistory.map(h => <li key={h}>{h}</li>)}
+              </ul>
+            </Window>
+            <Window className="mt-2" title="Players.exe">
+              <ul className="tree-view mt-3">
+                { users.map(h => <li key={h}>{h}</li>)}
+              </ul>
+            </Window>
           </div>
         </div>
       </div>

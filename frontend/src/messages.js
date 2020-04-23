@@ -16,7 +16,11 @@ export default class MessageManager {
         this.client.subscribe(`${game}/cursor`);
         this.client.subscribe(`${game}/piece`);
         this.client.subscribe(`${game}/dice`);
+        this.client.subscribe(`${game}/new`);
         this.connected = true;
+
+        // New player
+        this.client.publish(`${this.game}/new`, `no_data`, 0);
       }
     });
   }

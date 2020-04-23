@@ -19,16 +19,14 @@ export default function Match(props) {
     dispatch(actions.setGameId(routeId));
   }
 
-  if (!open && gameId) {
+  if (token && gameId) {
     history.push(`/${gameId}/play/${token}`);
   }
 
   useEffect(() => {
-    let interval;
     if (gameId) {
-      interval = window.setInterval(() => dispatch(actions.getMatchStatus(gameId)), 2500);
+      dispatch(actions.getMatchStatus(gameId));
     }
-    return () => interval && window.clearInterval(interval);
   }, [gameId]);
 
   const joinMatch = () => {
@@ -54,43 +52,39 @@ export default function Match(props) {
     } else {
       return (
         <div>
-          <input placeholder="Nickname" ref={nicknameRef}/>
-          <button onClick={joinMatch}>Join Game</button>
+          <input type="text" placeholder="Nickname" ref={nicknameRef}/>
+          <button className="ml-2" onClick={joinMatch}>Join Game</button>
         </div>
       );
     }
   };
 
   const renderUsers = () => {
-    if (users.length === 0) {
-      return (
-        <div className="loader">
-          Waiting for players to join
-          <HashLoader size="20" color="#33ffff" css="margin: 20px auto"/>
-        </div>
+    return (
+      <div>
+        <p className="mt-3">Users in this match:</p>
+        <ul className="tree-view">
+          {users.map(user => <li key={user}>{user}</li>)}
+        </ul>
+      </div>
       );
-    } else {
-      return (
-        <div className="loader">
-          <u>Players in this match:</u>
-          {users.map(user => <div key={user} className="user">{user}</div>)}
-          <HashLoader size="20" color="#33ffff" css="margin: 20px auto"/>
-        </div>
-      );
-    }
   };
   
   return (
     <div className="match">
-      <div className="container">
-        <div className="title">
-          DAS Brettspiel
+      <div className="window container">
+        <div className="title-bar">
+          <div className="title-bar-text">DAS BRETTSPIEL</div>
+          <div className="title-bar-controls">
+          </div>
         </div>
-        <div className="join">
-          {renderJoin()}
+        <div className="window-body center">
+          <p>Willkommen beim Brettspiel!</p>
+          <div className="join">
+            {renderJoin()}
+          </div>
+          {renderUsers()}
         </div>
-        {renderUsers()}
-        <button className="start-game" onClick={closeMatch}>Start game</button>
       </div>
     </div>
   );
