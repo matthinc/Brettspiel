@@ -20,7 +20,7 @@ export default function Match(props) {
   }
 
   if (token && gameId) {
-    history.push(`/${gameId}/play/${token}`);
+    window.location.href = `/${gameId}/play/${token}`;
   }
 
   useEffect(() => {
@@ -38,12 +38,6 @@ export default function Match(props) {
     }
     
     dispatch(actions.joinMatch(gameId, nickname));
-  };
-
-  const closeMatch = () => {
-    // Only allow this action when user has joined the game
-    if (token)
-      dispatch(actions.closeMatch(gameId));
   };
 
   const renderJoin = () => {

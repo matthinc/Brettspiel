@@ -92,7 +92,7 @@ export default function Game(props) {
 
   // Load game pieces initially
   useEffect(() => {
-    if (!Object.keys(pieces).lengh) {
+    if (!Object.keys(pieces).length) {
       const initialPieces = {};
       let index = 0;
       for (let user of users) {
@@ -109,9 +109,12 @@ export default function Game(props) {
     }
     if (gameId && token) {
       dispatch(actions.setUserName(gameId, token));
-      setMessageManager(new MessageManager(gameId, token, onMqttMessage));
+
+      if (!messageManager) {
+        setMessageManager(new MessageManager(gameId, token, onMqttMessage));
+      }
     }
-  }, [gameId, token, username]);
+  }, [gameId, token]);
 
   const mouseMove = (x, y) => {
     if (messageManager) {
@@ -131,11 +134,11 @@ export default function Game(props) {
   };
 
   return (
-    <div className="game noselect">
+    <div className="game">
       <div className="container mt-4">
         <div className="row">
           <div className="col-md-6">
-            <Window title="Brettspiel.exe">
+            <Window title="Brettspiel.exe" className="noselect">
               <Board pieces={pieces} cursors={cursors} mouseMove={mouseMove} username={username} movePiece={movePiece}/>
             </Window>
           </div>
@@ -149,6 +152,9 @@ export default function Game(props) {
               </ul>
             </Window>
             <Window className="mt-2" title="Players.exe">
+              <span className="mr-2">Copy this link to invite players:</span>
+              <pre><code>{`https://${window.location.host}/${gameId}`}</code></pre>
+              <p className="mt-3">Players in this game:</p>
               <ul className="tree-view mt-3">
                 { users.map(h => <li key={h}>{h}</li>)}
               </ul>
