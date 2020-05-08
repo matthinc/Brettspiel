@@ -55,7 +55,7 @@ export default function Game(props) {
       const fields = payload.split('_');
       setDiceNumber(fields[0]);
       const newHistory = [`${fields[1]} (${fields[0]})`, ...diceHistoryRef.current];
-      setDiceHistory([newHistory[0]]);
+      setDiceHistory([newHistory[0],newHistory[1],newHistory[2],newHistory[3],newHistory[4]]);
     }
     // Cursor movement
     if (message.topic.endsWith('/cursor')) {
